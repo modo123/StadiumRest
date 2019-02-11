@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="https://v40.pingendo.com/assets/bootstrap/bootstrap-4.0.0-beta.1.css" type="text/css"> </head>
+
+<body>
+  <nav class="navbar navbar-expand-md bg-primary navbar-dark">
+    <div class="container">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+      <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Kontakt&nbsp;<i class="fa d-inline fa-lg fa-envelope-o"></i>
+              <br>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="py-5 text-white opaque-overlay h-75" style="background-image: url('C:/Users/ruchn/Desktop/aui6.jpeg');">
+    <div class="container">
+      <div class="row">
+          
+          
+          <div class="col-md-6">
+		<!-- MAPA  -->
+            <div id="map" style="height:100%; width:100%; clear:both"></div>
+              <script>
+                var map;
+                function initMap() {
+                     var pozycja = {lat: 54.604264, lng: 18.358769};
+                  map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 54.604264, lng: 18.358769},
+                    zoom: 16,
+                    center: pozycja
+                  }); 
+                  var marker = new google.maps.Marker({
+                    position: pozycja,
+                    map: map
+                  });
+                }
+              </script>
+              <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkpgMdQOIvSLl78UtjaPX7kM8el6JMcT0&callback=initMap"
+                      async defer>
+                  
+              </script>
+		</div>
+          
+          
+        <div class="col-md-6">
+            
+  
+          
+            <h1>Co chcesz zrobic?</h1>
+         
+          <form>
+          
+            <div class="form-group"> <label for="Textarea">Wpisz miasto aby sprawdzić pogodę</label>
+                <input type="text" class="form-control" id="miasto" placeholder="<miasto>"> </div>
+            <button type="button" class="btn btn-secondary" id="pogoda" onclick="pokazPogode()" >Sprawdź</button>
+
+            
+            <div class="form-group"> <label for="Textarea">Znajdź interesujący Cię event</label>
+                <input type="text" class="form-control" id="searchEvent" placeholder="<podaj id> "> </div>
+            <button type="button" class="btn btn-secondary" id="search" onclick="szukajEventu()" >Szukaj</button>
+            
+            <button type="button" class="btn btn-secondary" id="allEvents" onclick="pokazEventy()" >Wyswietl wszystkie eventy</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    
+  
+  <div class="pt-5 text-white bg-primary">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-md-left text-center align-self-center my-5">
+          <h1 class="display-1" id="div_weather" ></h1>
+          <div id="resultsOfSearch"></div>
+        </div>
+        </div>
+    </div>
+  </div>
+    
+  
+
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+          <script>
+             function pokazPogode() 
+             {
+                 console.log("AAAA");
+                          var city = $("#miasto").val();
+                            console.log(city);
+                          
+                          $.getJSON("http://api.openweathermap.org/data/2.5/weather?q=" + city+ "&appid=fb5ab3900c42ec48ba16e7bd7895b117", { units: "metric"
+            }, function (data) {
+                              console.log("Temperatura:" + data.main.temp)
+                              var pokaz = "<h1> Temperatura: " + data.main.temp + " C ";
+                              
+                               console.log(pokaz);
+                              $("#div_weather").html(pokaz); 
+                            });
+
+                }
+                
+                
+                 function szukajEventu() 
+                 {
+                        var id = $('#searchEvent').val();
+                        console.log(id);
+                        $.getJSON('resources/stadion/find', {'stadion_id': id}, function (data) 
+                        { 
+                         console.log(data);
+   
+                        var tekst = "  Nazwa eventu o ID "+  id + " to: "+ data.tytul ;
+                        $("#resultsOfSearch").html(tekst);
+                      });
+                }  
+                
+                   function pokazEventy() 
+                   {
+
+                        var tekst = "  Wszytskie eventy na tym stadionie :<br>";
+                        console.log("cc");
+                        $("#resultsOfSearch").html(tekst);
+                        console.log("dd");
+                        $.getJSON('resources/stadion/all', function (data) 
+                        {
+                        for (var i = 0; i < data.length; i++) 
+                        {
+                            console.log(data[i]);
+                            var all = data[i];
+                            $("#resultsOfSearch").append(all.id + "  " + all.tytul + " <br> ");
+                        }
+
+                      });
+                }  
+                
+    </script>
+    
+  <div class="py-5 bg-dark text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          <p class="lead">Podaj swojego maila, aby dostawać najnowsze informacje.</p>
+          <form class="form-inline">
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="E-mail"> </div>
+            <button type="submit" class="btn btn-primary ml-3">Subskrybuj
+              <br>
+            </button>
+          </form>
+        </div>
+        <div class="col-4 col-md-1 align-self-center">
+          <a href="https://www.facebook.com" target="_blank"><i class="fa fa-fw fa-facebook fa-3x text-white"></i></a>
+        </div>
+        <div class="col-4 col-md-1 align-self-center">
+          <a href="https://twitter.com" target="_blank"><i class="fa fa-fw fa-twitter fa-3x text-white"></i></a>
+        </div>
+        <div class="col-4 col-md-1 align-self-center">
+          <a href="https://www.instagram.com" target="_blank"><i class="fa fa-fw fa-instagram text-white fa-3x"></i></a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-3 text-center">
+          <p>© Copyright 2018 Dawid Ruchniewicz
+            <br>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <pingendo onclick="window.open('https://pingendo.com/', '_blank')" style="cursor:pointer;position: fixed;bottom: 10px;right:10px;padding:4px;background-color: #00b0eb;border-radius: 8px; width:110px;display:flex;flex-direction:row;align-items:center;justify-content:center;font-size:14px;color:white">made with&nbsp;&nbsp;
+    <img src="https://pingendo.com/site-assets/Pingendo_logo_big.png" class="d-block" alt="Pingendo logo" height="16">
+  </pingendo>
+</body>
+
+</html>
